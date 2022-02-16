@@ -1,7 +1,7 @@
 # Личный проект «Кексобукинг»
 
 * Студент: [Никита Акимов](https://up.htmlacademy.ru/javascript/25/user/2037905).
-* Наставник: `Неизвестно`.
+* Наставник: `Дмитрий (sench) Железцов`(https://htmlacademy.ru/profile/sench).
 
 ---
 
