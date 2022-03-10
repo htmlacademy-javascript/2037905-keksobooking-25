@@ -1,7 +1,6 @@
 import {getRandomInt, getRandomFloat, getRandomLengthArray, getRandomArrayElement} from './util.js';
 
 const ADVERTS_NUMBER = 10;
-const arrayOfAdverts = [];
 const HOUSES = [
   'palace',
   'flat',
@@ -32,7 +31,6 @@ const ROOMSPHOTOS = [
   'https://assets.htmlacademy.ru/content/intensive/javascript-1/keksobooking/claire-rendall-b6kAwr1i0Iw.jpg'];
 
 
-
 const locationRange = {
   lat: {
     from: 35.65,
@@ -47,38 +45,30 @@ const locationRange = {
 
 const PRICE_NUM = {
   min: 0,
-  max: 9999,
+  max: 100000,
 };
 
 const ROOMS_NUM = {
   min: 0,
-  max: 99,
+  max: 3,
 };
 
 const GUESTS_NUM = {
   min: 0,
-  max: 10,
+  max: 3,
 };
 
-const PIC_NUM = {
-  min: 1,
-  max: 10,
-};
 
-let getImgNumber = function () {
-  if (getRandomInt(PIC_NUM, PIC_NUM.max) < 10) {
-    getImgNumber = '0' + getRandomInt();
-    return getImgNumber;
-  };
-};
+const createOffers = (idx) => {
+  const currentIndex = idx + 1;
 
-function createOffers() {
   const xLocation = getRandomFloat(locationRange.lat.from, locationRange.lat.to, locationRange.decimals);
   const yLocation = getRandomFloat(locationRange.lng.from, locationRange.lng.to, locationRange.decimals);
 
-  return ({
+
+  const advertObject = {
     author: {
-      avatar: `img/avatars/user-${getImgNumber()}.png`
+      avatar: `img/avatars/user${(currentIndex.toString()).padStart(2, '0')}.png`,
     },
 
     offer: {
@@ -99,11 +89,11 @@ function createOffers() {
       x: xLocation,
       y: yLocation,
     },
-  });
+  };
+  return advertObject;
 };
 
-for (let i = 0;  i < ADVERTS_NUMBER; i++) {
-  arrayOfAdverts[i] = createOffers(i);
-}
+const arrayOfAdverts = () => Array.from({length: ADVERTS_NUMBER}).map((item, idx) => createOffers(idx));
 
-export{arrayOfAdverts, ADVERTS_NUMBER}
+
+export{arrayOfAdverts, ADVERTS_NUMBER};
