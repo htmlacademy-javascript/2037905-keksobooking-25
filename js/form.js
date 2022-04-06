@@ -1,5 +1,9 @@
 const adFormTitle = document.querySelector('.ad-form');
-const maxRooms = 100;
+
+const MAX_ROOMS = 100;
+//вынес в константы
+const MIN_SYMBOLS = 30;
+const MAX_SYMBOLS = 100;
 
 const pristine = new Pristine(adFormTitle, {
   classTo: 'ad-form__element',
@@ -13,10 +17,10 @@ const pristine = new Pristine(adFormTitle, {
 pristine.addValidator(
   adFormTitle.querySelector('#title'),
   validateNickname,
-  'От 30 до 100 символов'
+  `От ${  MIN_SYMBOLS  } до ${  MAX_SYMBOLS  } символов`
 );
 function validateNickname(value) {
-  return value.length >= 30 && value.length <= 100;
+  return value.length >= MIN_SYMBOLS && value.length <= MAX_SYMBOLS;
 }
 
 const roomsField = adFormTitle.querySelector('[name="rooms"]');
@@ -31,7 +35,7 @@ const capacity = {
 
 function getCapacityErrorMessage(value) {
   const rooms = Number(value);
-  if (rooms === maxRooms) {
+  if (rooms === MAX_ROOMS) {
     return 'Выберите "не для гостей"';
   }
 
