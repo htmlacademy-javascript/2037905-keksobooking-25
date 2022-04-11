@@ -3,6 +3,7 @@ import {drawAd} from './markup-generation.js';
 import {getActiveState, getDisactiveState} from './map-form.js';
 import './form.js';
 import './map.js';
+
 arrayOfAdverts(ADVERTS_NUMBER);
 drawAd();
 

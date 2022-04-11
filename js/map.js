@@ -60,8 +60,8 @@ const markerGroup = L.layerGroup().addTo(map);
 const createOfferMarker = ({author, offer, location}) => {
   const offerPinMarker = L.marker(
     {
-      lat: location.lat,
-      lng: location.lng,
+      lat: location.x,
+      lng: location.y,
     },
     {
       icon: offerPinIcon,
@@ -87,8 +87,10 @@ L.tileLayer(
 mainPinMarker.addTo(map);
 
 // Добавить маркеры с объявлениями
+const similarCards = arrayOfAdverts();
 
-arrayOfAdverts.forEach((marker) => {
+
+similarCards.forEach((marker) => {
   createOfferMarker(marker);
 });
 
