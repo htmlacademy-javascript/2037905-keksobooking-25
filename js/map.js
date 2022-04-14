@@ -1,6 +1,8 @@
-import {arrayOfAdverts} from './data.js';
-import {drawAd} from './markup-generation.js';
+
+import {createAd} from './markup-generation.js';
 import {getDisactiveState, getActiveState} from './map-form.js';
+import { getData } from './api.js';
+import {showAlert} from './util.js';
 
 const CENTER_TOKIO_LAT = 35.681729;
 const CENTER_TOKIO_LNG = 139.753927;
@@ -12,6 +14,7 @@ const PIN_ICON_ANCHOR = [20, 40];
 
 const adForm = document.querySelector('.ad-form');
 const addressField = adForm.querySelector('[name="address"]');
+const resetButton = document.querySelector('.ad-form__reset');
 
 const setAddressFieldValue = (address) => {
   addressField.value = `${address.lat.toFixed(5)}, ${address.lng.toFixed(5)}`;
@@ -28,7 +31,6 @@ const map = L.map('map-canvas')
     lng: CENTER_TOKIO_LNG,
   }, MAP_ZOOM);
 
-// Главный маркер с координатами центра Токио
 
 const mainPinIcon = L.icon({
   iconUrl: './img/main-pin.svg',
@@ -47,7 +49,6 @@ const mainPinMarker = L.marker(
   },
 );
 
-// Маркеры с объявлениями
 
 const offerPinIcon = L.icon ({
   iconUrl: './img/pin.svg',
@@ -57,23 +58,49 @@ const offerPinIcon = L.icon ({
 
 const markerGroup = L.layerGroup().addTo(map);
 
-const createOfferMarker = ({author, offer, location}) => {
-  const offerPinMarker = L.marker(
+const createOfferMarker = (point) => {
+  const lat = point.location.lat;
+  const lng = point.location.lng;
+  const marker = L.marker(
     {
-      lat: location.x,
-      lng: location.y,
+      lat,
+      lng,
     },
     {
       icon: offerPinIcon,
     },
   );
-
-  offerPinMarker
-    .addTo(markerGroup)
-    .bindPopup(drawAd({author, offer}));
+  marker.addTo(markerGroup)
+    .bindPopup(createAd(point));
 };
 
-// Рендер карты
+getData(createOfferMarker, showAlert);
+
+
+resetButton.addEventListener('click',()=>{
+  adForm.reset();
+  setAddressFieldValue ();
+  mainPinMarker.setLatLng({
+    lat: CENTER_TOKIO_LAT,
+    lng: CENTER_TOKIO_LNG,
+  });
+  map.setView({
+    lat: CENTER_TOKIO_LAT,
+    lng: CENTER_TOKIO_LNG,
+  }, MAP_ZOOM);
+});
+
+adForm.addEventListener('sumbit',()=>{
+  mainPinMarker.setLatLng({
+    lat: CENTER_TOKIO_LAT,
+    lng: CENTER_TOKIO_LNG,
+  });
+  map.setView({
+    lat: CENTER_TOKIO_LAT,
+    lng: CENTER_TOKIO_LNG,
+  }, MAP_ZOOM);
+});
+
 
 L.tileLayer(
   'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
@@ -82,22 +109,12 @@ L.tileLayer(
   },
 ).addTo(map);
 
-// Добавить главный маркер
 
 mainPinMarker.addTo(map);
 
-// Добавить маркеры с объявлениями
-const similarCards = arrayOfAdverts();
-
-
-similarCards.forEach((marker) => {
-  createOfferMarker(marker);
-});
-
-// При передвижении главного маркера в форму передаются координаты
 
 mainPinMarker.on('moveend', (evt) => {
   setAddressFieldValue(evt.target.getLatLng());
 });
 
-export {map};
+export {map, createOfferMarker, CENTER_TOKIO_LAT, CENTER_TOKIO_LNG};
