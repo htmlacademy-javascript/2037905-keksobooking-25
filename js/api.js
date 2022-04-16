@@ -1,15 +1,13 @@
-const getData = (onSuccess, onFail) => {
+const getData = (onFail, onSuccess) => {
   fetch('https://25.javascript.pages.academy/keksobooking/data')
     .then((response) => {
       if (response.ok) {
         return response.json();
-      } else {
-        onFail('Произошла ошибка загрузки данных, перезагрузите страницу');
-      }})
-    .then((data) => {
-      data.forEach((point)=>{
-        onSuccess(point);
-      });
+      }
+      onFail('Произошла ошибка загрузки данных, перезагрузите страницу');
+    })
+      .then((ads) => {
+        onSuccess(ads);
     })
     .catch(()=>{
       onFail('Произошла ошибка загрузки данных, перезагрузите страницу');
@@ -27,11 +25,10 @@ const sendData = (onSuccess, onFail, body) => {
   )
     .then((response)=>{
       if (response.ok)
-      {
+       {
         onSuccess();
-      } else {
+       }
         throw new Error();
-      }
     })
     .catch(()=>{
       onFail();

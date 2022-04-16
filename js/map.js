@@ -1,8 +1,7 @@
 
 import {createAd} from './markup-generation.js';
 import {getDisactiveState, getActiveState} from './map-form.js';
-import { getData } from './api.js';
-import {showAlert} from './util.js';
+import {checkType,checkPrice, checkRooms, checkGuests, checkFeatures} from './map-filter.js';
 
 const CENTER_TOKIO_LAT = 35.681729;
 const CENTER_TOKIO_LNG = 139.753927;
@@ -19,6 +18,8 @@ const resetButton = document.querySelector('.ad-form__reset');
 const setAddressFieldValue = (address) => {
   addressField.value = `${address.lat.toFixed(5)}, ${address.lng.toFixed(5)}`;
 };
+
+addressField.value = `${CENTER_TOKIO_LAT.toFixed(5)}, ${CENTER_TOKIO_LNG.toFixed(5)}`;
 
 getDisactiveState ();
 
@@ -71,15 +72,26 @@ const createOfferMarker = (point) => {
     },
   );
   marker.addTo(markerGroup)
-    .bindPopup(createAd(point));
+    .bindPopup(
+      createAd(point)
+      );
 };
 
-getData(createOfferMarker, showAlert);
+const renderSimilarAds = (ads, adCount) => {
+  markerGroup.clearLayers();
+  ads
+    .slice()
+    .filter((it) => checkType(it) && checkPrice(it) && checkRooms(it) && checkGuests(it) && checkFeatures(it))
+    .slice(0, adCount)
+    .forEach((advertise) => {
+      createOfferMarker(advertise);
+    });
+};
 
 
-resetButton.addEventListener('click',()=>{
+const resetForm = () => {
   adForm.reset();
-  setAddressFieldValue ();
+  addressField.value = `${CENTER_TOKIO_LAT.toFixed(5)}, ${CENTER_TOKIO_LNG.toFixed(5)}`;
   mainPinMarker.setLatLng({
     lat: CENTER_TOKIO_LAT,
     lng: CENTER_TOKIO_LNG,
@@ -88,6 +100,11 @@ resetButton.addEventListener('click',()=>{
     lat: CENTER_TOKIO_LAT,
     lng: CENTER_TOKIO_LNG,
   }, MAP_ZOOM);
+};
+
+resetButton.addEventListener('click',(evt)=>{
+  evt.preventDefault();
+  resetForm();
 });
 
 adForm.addEventListener('sumbit',()=>{
@@ -117,4 +134,4 @@ mainPinMarker.on('moveend', (evt) => {
   setAddressFieldValue(evt.target.getLatLng());
 });
 
-export {map, createOfferMarker, CENTER_TOKIO_LAT, CENTER_TOKIO_LNG};
+export {map, createOfferMarker, CENTER_TOKIO_LAT, CENTER_TOKIO_LNG, renderSimilarAds};

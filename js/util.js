@@ -53,5 +53,20 @@ const showAlert = (message) => {
   }, ALERT_SHOW_TIME);
 };
 
+const getCheckedInputValues = (selector) => {
+  const checkedValues = [];
+  const filterFeatures = document.querySelectorAll(selector);
+  filterFeatures.forEach((features) => checkedValues.push(features.value));
+  return checkedValues;
+};
 
-export {getRandomInt, getRandomFloat, getRandomLengthArray, getRandomArrayElement, isEscEvent, showAlert};
+const debounce = (callback, timeoutDelay = 500) => {
+  let timeoutId;
+
+  return (...rest) => {
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(() => callback.apply(this, rest), timeoutDelay);
+  };
+};
+
+export {getRandomInt, getRandomFloat, getRandomLengthArray, getRandomArrayElement, isEscEvent, showAlert, getCheckedInputValues, debounce};
