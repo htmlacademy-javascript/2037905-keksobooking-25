@@ -5,6 +5,7 @@ import {checkType, checkPrice, checkRooms, checkGuests, checkFeatures, mapFilter
 import { getData } from './api.js';
 import {showAlert, debounce} from './util.js';
 import {adsFilter} from './map-filter.js';
+import { newPhotoElement } from './photos.js';
 
 const CENTER_TOKIO_LAT = 35.681729;
 const CENTER_TOKIO_LNG = 139.753927;
@@ -21,6 +22,8 @@ const RERENDER_DELAY = 500;
 const adForm = document.querySelector('.ad-form');
 const addressField = adForm.querySelector('[name="address"]');
 const resetButton = document.querySelector('.ad-form__reset');
+const avatarPreview = document.querySelector('.ad-form-header__preview img');
+const AVATAR_DEFAULT_SRC = 'img/muffin-grey.svg';
 
 const setAddressFieldValue = (address) => {
   addressField.value = `${address.lat.toFixed(COOR_DECIMALS)}, ${address.lng.toFixed(COOR_DECIMALS)}`;
@@ -97,8 +100,11 @@ const renderSimilarAds = (ads, adCount) => {
 
 
 const resetForm = () => {
+  newPhotoElement.remove();
+  avatarPreview.src = AVATAR_DEFAULT_SRC;
   mapFilters.reset();
   adForm.reset();
+  addressField.value = `${CENTER_TOKIO_LAT.toFixed(COOR_DECIMALS)}, ${CENTER_TOKIO_LNG.toFixed(COOR_DECIMALS)}`;
   mainPinMarker.setLatLng({
     lat: CENTER_TOKIO_LAT,
     lng: CENTER_TOKIO_LNG,
@@ -121,6 +127,8 @@ resetButton.addEventListener('click',(evt)=>{
 });
 
 adForm.addEventListener('sumbit',()=>{
+  newPhotoElement.remove();
+  avatarPreview.src = AVATAR_DEFAULT_SRC;
   mainPinMarker.setLatLng({
     lat: CENTER_TOKIO_LAT,
     lng: CENTER_TOKIO_LNG,
