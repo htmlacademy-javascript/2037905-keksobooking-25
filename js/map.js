@@ -1,7 +1,10 @@
 
 import {createAd} from './markup-generation.js';
 import {getDisactiveState, getActiveState} from './map-form.js';
-import {checkType,checkPrice, checkRooms, checkGuests, checkFeatures} from './map-filter.js';
+import {checkType, checkPrice, checkRooms, checkGuests, checkFeatures, mapFilters} from './map-filter.js';
+import { getData } from './api.js';
+import {showAlert, debounce} from './util.js';
+import {adsFilter} from './map-filter.js';
 
 const CENTER_TOKIO_LAT = 35.681729;
 const CENTER_TOKIO_LNG = 139.753927;
@@ -10,16 +13,20 @@ const MAIN_PIN_ICON_SIZE = [52, 52];
 const MAIN_PIN_ICON_ANCHOR = [26, 52];
 const PIN_ICON_SIZE = [40, 40];
 const PIN_ICON_ANCHOR = [20, 40];
+const COOR_DECIMALS = 5;
+const SIMILAR_AD_COUNT = 10;
+const RERENDER_DELAY = 500;
+
 
 const adForm = document.querySelector('.ad-form');
 const addressField = adForm.querySelector('[name="address"]');
 const resetButton = document.querySelector('.ad-form__reset');
 
 const setAddressFieldValue = (address) => {
-  addressField.value = `${address.lat.toFixed(5)}, ${address.lng.toFixed(5)}`;
+  addressField.value = `${address.lat.toFixed(COOR_DECIMALS)}, ${address.lng.toFixed(COOR_DECIMALS)}`;
 };
 
-addressField.value = `${CENTER_TOKIO_LAT.toFixed(5)}, ${CENTER_TOKIO_LNG.toFixed(5)}`;
+addressField.value = `${CENTER_TOKIO_LAT.toFixed(COOR_DECIMALS)}, ${CENTER_TOKIO_LNG.toFixed(COOR_DECIMALS)}`;
 
 getDisactiveState ();
 
@@ -74,7 +81,7 @@ const createOfferMarker = (point) => {
   marker.addTo(markerGroup)
     .bindPopup(
       createAd(point)
-      );
+    );
 };
 
 const renderSimilarAds = (ads, adCount) => {
@@ -90,8 +97,8 @@ const renderSimilarAds = (ads, adCount) => {
 
 
 const resetForm = () => {
+  mapFilters.reset();
   adForm.reset();
-  addressField.value = `${CENTER_TOKIO_LAT.toFixed(5)}, ${CENTER_TOKIO_LNG.toFixed(5)}`;
   mainPinMarker.setLatLng({
     lat: CENTER_TOKIO_LAT,
     lng: CENTER_TOKIO_LNG,
@@ -100,6 +107,12 @@ const resetForm = () => {
     lat: CENTER_TOKIO_LAT,
     lng: CENTER_TOKIO_LNG,
   }, MAP_ZOOM);
+  map.closePopup();
+  getData(showAlert, (data) => {
+    renderSimilarAds(data, SIMILAR_AD_COUNT);
+    adsFilter(debounce(() => renderSimilarAds(data, SIMILAR_AD_COUNT),RERENDER_DELAY));
+  });
+
 };
 
 resetButton.addEventListener('click',(evt)=>{
@@ -116,6 +129,7 @@ adForm.addEventListener('sumbit',()=>{
     lat: CENTER_TOKIO_LAT,
     lng: CENTER_TOKIO_LNG,
   }, MAP_ZOOM);
+
 });
 
 

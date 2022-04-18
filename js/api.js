@@ -6,8 +6,8 @@ const getData = (onFail, onSuccess) => {
       }
       onFail('Произошла ошибка загрузки данных, перезагрузите страницу');
     })
-      .then((ads) => {
-        onSuccess(ads);
+    .then((ads) => {
+      onSuccess(ads);
     })
     .catch(()=>{
       onFail('Произошла ошибка загрузки данных, перезагрузите страницу');
@@ -25,10 +25,10 @@ const sendData = (onSuccess, onFail, body) => {
   )
     .then((response)=>{
       if (response.ok)
-       {
+      {
         onSuccess();
-       }
-        throw new Error();
+      }
+      throw new Error();
     })
     .catch(()=>{
       onFail();
