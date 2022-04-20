@@ -4,7 +4,7 @@ const getData = (onFail, onSuccess) => {
       if (response.ok) {
         return response.json();
       }
-      onFail('Произошла ошибка загрузки данных, перезагрузите страницу');
+      throw new Error();
     })
     .then((ads) => {
       onSuccess(ads);
