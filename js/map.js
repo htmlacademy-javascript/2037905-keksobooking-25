@@ -1,35 +1,33 @@
 
 import {createAd} from './markup-generation.js';
 import {getDisactiveState, getActiveState} from './map-form.js';
-import {checkType, checkPrice, checkRooms, checkGuests, checkFeatures, mapFilters} from './map-filter.js';
-import { getData } from './api.js';
+import {filterAds, checkType, checkPrice, checkRooms, checkGuests, checkFeatures, mapFiltersElement} from './map-filter.js';
+import {getData} from './api.js';
 import {showAlert, debounce} from './util.js';
-import {adsFilter} from './map-filter.js';
-import { newPhotoElement } from './photos.js';
+import {newPhotoElement} from './photos.js';
 
 const CENTER_TOKIO_LAT = 35.681729;
 const CENTER_TOKIO_LNG = 139.753927;
 const MAP_ZOOM = 13;
-const MAIN_PIN_ICON_SIZE = [52, 52];
-const MAIN_PIN_ICON_ANCHOR = [26, 52];
-const PIN_ICON_SIZE = [40, 40];
-const PIN_ICON_ANCHOR = [20, 40];
 const COOR_DECIMALS = 5;
 const SIMILAR_AD_COUNT = 10;
 const RERENDER_DELAY = 500;
+const sizes = [52, 52];
+const anchors = [26, 52];
+const formats = [40, 40];
+const ankers = [20, 40];
 
-
-const adForm = document.querySelector('.ad-form');
-const addressField = adForm.querySelector('[name="address"]');
-const resetButton = document.querySelector('.ad-form__reset');
-const avatarPreview = document.querySelector('.ad-form-header__preview img');
+const adFormElement = document.querySelector('.ad-form');
+const addressFieldElement = adFormElement.querySelector('[name="address"]');
+const resetButtonElement = document.querySelector('.ad-form__reset');
+const avatarPreviewElement = document.querySelector('.ad-form-header__preview img');
 const AVATAR_DEFAULT_SRC = 'img/muffin-grey.svg';
 
 const setAddressFieldValue = (address) => {
-  addressField.value = `${address.lat.toFixed(COOR_DECIMALS)}, ${address.lng.toFixed(COOR_DECIMALS)}`;
+  addressFieldElement.value = `${address.lat.toFixed(COOR_DECIMALS)}, ${address.lng.toFixed(COOR_DECIMALS)}`;
 };
 
-addressField.value = `${CENTER_TOKIO_LAT.toFixed(COOR_DECIMALS)}, ${CENTER_TOKIO_LNG.toFixed(COOR_DECIMALS)}`;
+addressFieldElement.value = `${CENTER_TOKIO_LAT.toFixed(COOR_DECIMALS)}, ${CENTER_TOKIO_LNG.toFixed(COOR_DECIMALS)}`;
 
 getDisactiveState ();
 
@@ -45,8 +43,8 @@ const map = L.map('map-canvas')
 
 const mainPinIcon = L.icon({
   iconUrl: './img/main-pin.svg',
-  iconSize: MAIN_PIN_ICON_SIZE,
-  iconAnchor: MAIN_PIN_ICON_ANCHOR,
+  iconSize: sizes,
+  iconAnchor: anchors,
 });
 
 const mainPinMarker = L.marker(
@@ -63,8 +61,8 @@ const mainPinMarker = L.marker(
 
 const offerPinIcon = L.icon ({
   iconUrl: './img/pin.svg',
-  iconSize: PIN_ICON_SIZE,
-  iconAnchor: PIN_ICON_ANCHOR,
+  iconSize: formats,
+  iconAnchor: ankers,
 });
 
 const markerGroup = L.layerGroup().addTo(map);
@@ -101,10 +99,10 @@ const renderSimilarAds = (ads, adCount) => {
 
 const resetForm = () => {
   newPhotoElement.remove();
-  avatarPreview.src = AVATAR_DEFAULT_SRC;
-  mapFilters.reset();
-  adForm.reset();
-  addressField.value = `${CENTER_TOKIO_LAT.toFixed(COOR_DECIMALS)}, ${CENTER_TOKIO_LNG.toFixed(COOR_DECIMALS)}`;
+  avatarPreviewElement.src = AVATAR_DEFAULT_SRC;
+  mapFiltersElement.reset();
+  adFormElement.reset();
+  addressFieldElement.value = `${CENTER_TOKIO_LAT.toFixed(COOR_DECIMALS)}, ${CENTER_TOKIO_LNG.toFixed(COOR_DECIMALS)}`;
   mainPinMarker.setLatLng({
     lat: CENTER_TOKIO_LAT,
     lng: CENTER_TOKIO_LNG,
@@ -116,19 +114,19 @@ const resetForm = () => {
   map.closePopup();
   getData(showAlert, (data) => {
     renderSimilarAds(data, SIMILAR_AD_COUNT);
-    adsFilter(debounce(() => renderSimilarAds(data, SIMILAR_AD_COUNT),RERENDER_DELAY));
+    filterAds(debounce(() => renderSimilarAds(data, SIMILAR_AD_COUNT),RERENDER_DELAY));
   });
 
 };
 
-resetButton.addEventListener('click',(evt)=>{
+resetButtonElement.addEventListener('click',(evt)=>{
   evt.preventDefault();
   resetForm();
 });
 
-adForm.addEventListener('sumbit',()=>{
+adFormElement.addEventListener('submit',()=>{
   newPhotoElement.remove();
-  avatarPreview.src = AVATAR_DEFAULT_SRC;
+  avatarPreviewElement.src = AVATAR_DEFAULT_SRC;
   mainPinMarker.setLatLng({
     lat: CENTER_TOKIO_LAT,
     lng: CENTER_TOKIO_LNG,
@@ -156,4 +154,4 @@ mainPinMarker.on('moveend', (evt) => {
   setAddressFieldValue(evt.target.getLatLng());
 });
 
-export {map, createOfferMarker, CENTER_TOKIO_LAT, CENTER_TOKIO_LNG, renderSimilarAds};
+export {map, createOfferMarker, CENTER_TOKIO_LAT, CENTER_TOKIO_LNG, renderSimilarAds, resetForm};

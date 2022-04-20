@@ -1,65 +1,65 @@
 import {getCheckedInputValues} from './util.js';
-const mapFilters = document.querySelector('.map__filters');
+const mapFiltersElement = document.querySelector('.map__filters');
 const  MIN_VALUE = 10000;
 const MAX_VALUE = 50000;
 
 
-const adsFilter = (cb) => {
-  mapFilters.addEventListener('change', () => {
+const filterAds = (cb) => {
+  mapFiltersElement.addEventListener('change', () => {
     cb();
   });
 };
 
 const checkType = (ads)=>{
-  const filterType = document.querySelector('#housing-type');
-  if (filterType.value === 'any') {
+  const filterTypeElement = document.querySelector('#housing-type');
+  if (filterTypeElement.value === 'any') {
     return true;
   }
-  return ads.offer.type===filterType.value;
+  return ads.offer.type===filterTypeElement.value;
 
 };
 const checkPrice = (ads)=> {
-  const filterPrice = document.querySelector('#housing-price');
-  if (filterPrice.value === 'any') {
+  const filterPriceElement = document.querySelector('#housing-price');
+  if (filterPriceElement.value === 'any') {
     return true;
-  } if (filterPrice.value === 'middle') {
+  } if (filterPriceElement.value === 'middle') {
     return MIN_VALUE <= ads.offer.price && ads.offer.price <= MAX_VALUE;
-  } if (filterPrice.value === 'low') {
+  } if (filterPriceElement.value === 'low') {
     return ads.offer.price <= MIN_VALUE;
-  } if (filterPrice.value === 'high') {
+  } if (filterPriceElement.value === 'high') {
     return MAX_VALUE < ads.offer.price;
   }
 };
 
 const checkRooms = (ads) => {
-  const filterRooms = document.querySelector('#housing-rooms');
-  if (filterRooms.value === 'any') {
+  const filterRoomsElement = document.querySelector('#housing-rooms');
+  if (filterRoomsElement.value === 'any') {
     return true;
   }
-  return ads.offer.rooms === Number(filterRooms.value);
+  return ads.offer.rooms === Number(filterRoomsElement.value);
 
 };
 
 const checkGuests = (ads) => {
-  const filterGuests = document.querySelector('#housing-guests');
-  if (filterGuests.value === 'any') {
+  const filterGuestsElement = document.querySelector('#housing-guests');
+  if (filterGuestsElement.value === 'any') {
     return true;
   }
-  return ads.offer.guests === Number(filterGuests.value);
+  return ads.offer.guests === Number(filterGuestsElement.value);
 
 };
 
 const checkFeatures = (ads) => {
-  const checkedInputValues = getCheckedInputValues('.map__checkbox:checked');
+  const checkedInputValuesElement = getCheckedInputValues('.map__checkbox:checked');
   let isSimilarAd = true;
-  if ( checkedInputValues.length === '0') {
+  if ( checkedInputValuesElement.length === '0') {
     return true;
   }
   if (!ads.offer.features) {
     return false;
   }
 
-  checkedInputValues.forEach((feature) => {
+  checkedInputValuesElement.forEach((feature) => {
     if ( !ads.offer.features.includes(feature) ) {
       isSimilarAd = false;
     }
@@ -69,4 +69,4 @@ const checkFeatures = (ads) => {
   return isSimilarAd;
 };
 
-export {adsFilter, checkType, checkPrice, checkRooms, checkGuests, checkFeatures, mapFilters};
+export {filterAds, checkType, checkPrice, checkRooms, checkGuests, checkFeatures, mapFiltersElement};

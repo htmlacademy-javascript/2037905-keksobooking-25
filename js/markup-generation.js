@@ -1,4 +1,4 @@
-const cardTemplate = document.querySelector('#card').content.querySelector('.popup');
+const cardElement = document.querySelector('#card').content.querySelector('.popup');
 
 const typesDictionary = {
   palace: 'Дворец',
@@ -8,8 +8,8 @@ const typesDictionary = {
   hotel: 'Отель',
 };
 const createAd = (card) => {
-  const adElement = cardTemplate.cloneNode(true);
-  const photoContainer = adElement.querySelector('.popup__photos');
+  const adElement = cardElement.cloneNode(true);
+  const photoElement = adElement.querySelector('.popup__photos');
   if (card.offer.title) {
     adElement.querySelector('.popup__title').textContent = card.offer.title;
   } else {
@@ -72,11 +72,11 @@ const createAd = (card) => {
 
   if (card.offer.photos) {
     card.offer.photos.forEach((url)=>{
-      const photoListItem = photoContainer.querySelector('.popup__photo').cloneNode(true);
+      const photoListItem = photoElement.querySelector('.popup__photo').cloneNode(true);
       photoListItem.src = url;
-      photoContainer.appendChild(photoListItem);
+      photoElement.appendChild(photoListItem);
     });
-    photoContainer.querySelectorAll('.popup__photo')[0].remove();
+    photoElement.querySelectorAll('.popup__photo')[0].remove();
   } else {
     adElement.querySelector('.popup__photos').classList.add('hidden');
   }

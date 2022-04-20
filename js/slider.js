@@ -3,7 +3,7 @@ const MIN_PRICE = 0;
 const SLIDER_STEP = 1;
 const SLIDER_START = 5000;
 
-const minPriceOfType = {
+const minPrice = {
   bungalow: 0,
   flat: 1000,
   hotel: 3000,
@@ -11,12 +11,12 @@ const minPriceOfType = {
   palace: 10000,
 };
 
-const adForm = document.querySelector('.ad-form');
-const priceSlider = adForm.querySelector('.ad-form__slider');
-const price = adForm.querySelector('#price');
-const type = adForm.querySelector('#type');
+const adFormElement = document.querySelector('.ad-form');
+const priceSliderElement = adFormElement.querySelector('.ad-form__slider');
+const priceElement = adFormElement.querySelector('#price');
+const typeElement = adFormElement.querySelector('#type');
 
-noUiSlider.create(priceSlider, {
+noUiSlider.create(priceSliderElement, {
   range: {
     min: MIN_PRICE,
     max: MAX_PRICE,
@@ -30,13 +30,13 @@ noUiSlider.create(priceSlider, {
   },
 });
 
-priceSlider.noUiSlider.on('update', () => {
-  price.value = priceSlider.noUiSlider.get();
+priceSliderElement.noUiSlider.on('update', () => {
+  priceElement.value = priceSliderElement.noUiSlider.get();
 });
 
-price.addEventListener('input', () => priceSlider.noUiSlider.set(price.value));
-type.addEventListener('change', () => {
-  priceSlider.noUiSlider.updateOptions({
-    start: minPriceOfType[type.value],
+priceElement.addEventListener('input', () => priceSliderElement.noUiSlider.set(priceElement.value));
+typeElement.addEventListener('change', () => {
+  priceSliderElement.noUiSlider.updateOptions({
+    start: minPrice[typeElement.value],
   });
 });
